@@ -34,16 +34,13 @@ npm install
 npm run build
 
 # 5. Create Desktop Entry
-cat > "$HOME/.local/share/applications/openclaw.desktop" <<EOD
-[Desktop Entry]
-Name=OpenClaw
-Comment=Personal AI Assistant OS
-Exec=gnome-terminal -- bash -c "cd $INSTALL_DIR && npm start; exec bash"
-Icon=$INSTALL_DIR/docs/assets/logo.png
-Terminal=false
-Type=Application
-Categories=Development;Utility;
-EOD
+# Create Desktop Entry in Programming & Accessories
+INSTALL_DIR_ESC=$(echo "$INSTALL_DIR" | sed "s///\//g")
+sed "s/%INSTALL_DIR%/$INSTALL_DIR_ESC/g" desktop_template > "$HOME/.local/share/applications/openclaw.desktop"
+# Also copy to Chrome Apps area if it exists (usually a subfolder of applications)
+mkdir -p "$HOME/.local/share/applications/chrome-apps"
+cp "$HOME/.local/share/applications/openclaw.desktop" "$HOME/.local/share/applications/chrome-apps/openclaw.desktop"
+
 
 # 6. Create CLI alias
 echo "alias openclaw='cd $INSTALL_DIR && npm start'" >> "$HOME/.bashrc"
@@ -54,4 +51,3 @@ cp "$INSTALL_DIR/openclaw-updater" "$HOME/.local/bin/openclaw-updater" 2>/dev/nu
 
 echo "✅ OpenClaw installed successfully!"
 echo "🚀 You can launch it from the Application Menu or by typing 'openclaw' in the terminal."
-sudo wget -O /usr/share/icons/hicolor/scalable/apps/openclaw.svg https://raw.githubusercontent.com/openclaw/openclaw/main/docs/assets/logo.svg

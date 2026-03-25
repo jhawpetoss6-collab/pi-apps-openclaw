@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=OpenClaw
+GenericName=AI Assistant OS
+Comment=The Sovereign AI Assistant OS for Raspberry Pi 5
+Exec=lxterminal -e "bash -c 'cd %INSTALL_DIR% && npm start; exec bash'"
+Icon=%INSTALL_DIR%/docs/assets/logo.png
+Terminal=false
+Type=Application
+Categories=Development;Utility;Network;X-Raspberry-Pi;
+Keywords=ai;assistant;claw;programming;
+StartupNotify=true
