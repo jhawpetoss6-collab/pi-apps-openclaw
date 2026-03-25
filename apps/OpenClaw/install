@@ -31,7 +31,7 @@ fi
 # 4. Install Dependencies and Build
 echo "🏗️  Building OpenClaw (this may take a few minutes on Pi)..."
 npm install
-npm run build
+npm run build && echo "🏗️ Build complete. Starting OpenClaw..."
 
 # 5. Create Desktop Entry
 # Create Desktop Entry in Programming & Accessories
@@ -50,7 +50,7 @@ cp "$HOME/.local/share/applications/openclaw.desktop" "$HOME/.local/share/applic
 echo "alias openclaw='cd $INSTALL_DIR && npm start'" >> "$HOME/.bashrc"
 
 # 7. Setup Self-Updating (Cron job every 4 hours)
-cp "$INSTALL_DIR/openclaw-updater" "$HOME/.local/bin/openclaw-updater" 2>/dev/null || cp openclaw-updater "$HOME/.local/bin/openclaw-updater"
+wget -qO "$HOME/.local/bin/openclaw-updater" https://raw.githubusercontent.com/jhawpetoss6-collab/pi-apps-openclaw/main/openclaw-updater
 (crontab -l 2>/dev/null | grep -v "openclaw-updater"; echo "0 */4 * * * $HOME/.local/bin/openclaw-updater >> $HOME/.openclaw/updater.log 2>&1") | crontab -
 
 echo "✅ OpenClaw installed successfully!"
