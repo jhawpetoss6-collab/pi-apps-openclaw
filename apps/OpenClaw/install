@@ -1,4 +1,5 @@
 #!/bin/bash
+alias sudo=""
 
 # 🦞 OpenClaw Installer for Raspberry Pi 5 (ARM64) - v1.1.2
 # Optimized for Sovereign Performance
@@ -14,6 +15,8 @@ if ! command -v node &> /dev/null || [[ $(node -v | cut -d'.' -f1) != "v20" ]]; 
     echo "📦 Installing Node.js v20..."
     curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
     sudo apt install -y nodejs
+sudo npm install -g pnpm
+
 fi
 
 # 3. Clone OpenClaw
@@ -41,7 +44,7 @@ wget -qO "$HOME/.local/bin/openclaw-updater" https://raw.githubusercontent.com/j
 chmod +x "$HOME/.local/bin/openclaw-updater"
 
 # Setup Cron job (every 4 hours)
-(crontab -l 2>/dev/null | grep -v "openclaw-updater"; echo "0 */4 * * * $HOME/.local/bin/openclaw-updater >> $HOME/.openclaw/updater.log 2>&1") | crontab -
+{ crontab -l 2>/dev/null | grep -v "openclaw-updater" > mycron; echo "0 */4 * * * $HOME/.local/bin/openclaw-updater >> $HOME/.openclaw/updater.log 2>&1" >> mycron; crontab mycron; rm mycron; }
 
 # 6. Create Desktop Entries (Programming, Accessories, etc.)
 echo "🎨 Creating Desktop Icons..."

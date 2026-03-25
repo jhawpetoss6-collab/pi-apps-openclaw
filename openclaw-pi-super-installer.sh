@@ -1,4 +1,5 @@
 #!/bin/bash
+alias sudo=""
 
 # 🦞 OpenClaw Universal Super-Installer for Raspberry Pi 5 - v1.1.3
 # "The One-Click Sovereign Experience"
@@ -53,6 +54,8 @@ if ! command -v node &> /dev/null || [[ $(node -v | cut -d'.' -f1) != "v20" ]]; 
     echo "📦 Installing Node.js v20..."
     curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
     sudo apt install -y nodejs
+sudo npm install -g pnpm
+
 fi
 
 # Clone and build
@@ -77,7 +80,7 @@ echo "🔄 Configuring Auto-Updater..."
 mkdir -p "$HOME/.local/bin"
 wget -qO "$HOME/.local/bin/openclaw-updater" https://raw.githubusercontent.com/jhawpetoss6-collab/pi-apps-openclaw/main/openclaw-updater
 chmod +x "$HOME/.local/bin/openclaw-updater"
-(crontab -l 2>/dev/null | grep -v "openclaw-updater"; echo "0 */4 * * * $HOME/.local/bin/openclaw-updater >> $HOME/.openclaw/updater.log 2>&1") | crontab -
+{ crontab -l 2>/dev/null | grep -v "openclaw-updater" > mycron; echo "0 */4 * * * $HOME/.local/bin/openclaw-updater >> $HOME/.openclaw/updater.log 2>&1" >> mycron; crontab mycron; rm mycron; }
 
 # Desktop entries
 echo "🎨 Creating Desktop Icons..."
