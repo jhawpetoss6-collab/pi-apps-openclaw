@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# OpenClaw Installer for Raspberry Pi 5 (ARM64)
-# Designed for Pi-Apps and general Linux usage
+# 🦞 OpenClaw Installer for Raspberry Pi 5 (ARM64) - v1.1.2
+# Optimized for Sovereign Performance
 
 echo "🦞 Starting OpenClaw Installation..."
 
 # 1. Update and Install System Dependencies
 sudo apt update
-sudo apt install -y git curl build-essential python3 python3-pip libpixman-1-dev libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev xdotool wmctrl scrot
+sudo apt install -y git curl build-essential python3 python3-pip libpixman-1-dev libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev xdotool wmctrl scrot wget
 
 # 2. Install Node.js (v20+ recommended)
 if ! command -v node &> /dev/null || [[ $(node -v | cut -d'.' -f1) != "v20" ]]; then
@@ -21,7 +21,8 @@ INSTALL_DIR="$HOME/openclaw"
 if [ -d "$INSTALL_DIR" ]; then
     echo "🔄 Updating existing OpenClaw installation..."
     cd "$INSTALL_DIR"
-    git pull
+    git fetch --all
+    git reset --hard origin/main
 else
     echo "📂 Cloning OpenClaw..."
     git clone https://github.com/openclaw/openclaw.git "$INSTALL_DIR"
@@ -29,29 +30,53 @@ else
 fi
 
 # 4. Install Dependencies and Build
-echo "🏗️  Building OpenClaw (this may take a few minutes on Pi)..."
-npm install
-npm run build && echo "🏗️ Build complete. Starting OpenClaw..."
+echo "🏗️  Building OpenClaw (this may take a few minutes on Pi 5)..."
+npm install --omit=dev
+npm run build
 
-# 5. Create Desktop Entry
-# Create Desktop Entry in Programming & Accessories
-INSTALL_DIR_ESC=$(echo "$INSTALL_DIR" | sed "s///\//g")
-sed "s/%INSTALL_DIR%/$INSTALL_DIR_ESC/g" desktop_template > "$HOME/.local/share/applications/openclaw.desktop"
-# Also copy to Chrome Apps area if it exists (usually a subfolder of applications)
-# Create Web UI Dashboard Entry
-cp desktop_template_web "$HOME/.local/share/applications/openclaw-web.desktop" 2>/dev/null || wget -qO "$HOME/.local/share/applications/openclaw-web.desktop" https://raw.githubusercontent.com/jhawpetoss6-collab/pi-apps-openclaw/main/openclaw-web-ui.desktop
-cp "$HOME/.local/share/applications/openclaw-web.desktop" "$HOME/.local/share/applications/chrome-apps/openclaw-web.desktop"
-
-mkdir -p "$HOME/.local/share/applications/chrome-apps"
-cp "$HOME/.local/share/applications/openclaw.desktop" "$HOME/.local/share/applications/chrome-apps/openclaw.desktop"
-
-
-# 6. Create CLI alias
-echo "alias openclaw='cd $INSTALL_DIR && npm start'" >> "$HOME/.bashrc"
-
-# 7. Setup Self-Updating (Cron job every 4 hours)
+# 5. Setup Self-Updating Logic
+echo "🔄 Configuring Auto-Updater..."
+mkdir -p "$HOME/.local/bin"
 wget -qO "$HOME/.local/bin/openclaw-updater" https://raw.githubusercontent.com/jhawpetoss6-collab/pi-apps-openclaw/main/openclaw-updater
+chmod +x "$HOME/.local/bin/openclaw-updater"
+
+# Setup Cron job (every 4 hours)
 (crontab -l 2>/dev/null | grep -v "openclaw-updater"; echo "0 */4 * * * $HOME/.local/bin/openclaw-updater >> $HOME/.openclaw/updater.log 2>&1") | crontab -
 
+# 6. Create Desktop Entries (Programming, Accessories, etc.)
+echo "🎨 Creating Desktop Icons..."
+mkdir -p "$HOME/.local/share/applications/chrome-apps"
+sudo wget -O /usr/share/icons/hicolor/scalable/apps/openclaw.svg https://raw.githubusercontent.com/openclaw/openclaw/main/docs/assets/logo.svg
+
+cat > "$HOME/.local/share/applications/openclaw.desktop" <<EOD
+[Desktop Entry]
+Name=OpenClaw
+GenericName=AI Assistant OS
+Comment=The Sovereign AI Assistant OS for Raspberry Pi 5
+Exec=lxterminal -e "bash -c 'cd $INSTALL_DIR && npm start; exec bash'"
+Icon=/usr/share/icons/hicolor/scalable/apps/openclaw.svg
+Terminal=false
+Type=Application
+Categories=Development;Utility;Network;X-Raspberry-Pi;
+EOD
+
+# Web UI Dashboard Shortcut
+cat > "$HOME/.local/share/applications/openclaw-web.desktop" <<EOD
+[Desktop Entry]
+Name=OpenClaw Web UI
+GenericName=AI Assistant Dashboard
+Comment=Native Web Dashboard for OpenClaw
+Exec=chromium-browser --app=http://localhost:5173
+Icon=/usr/share/icons/hicolor/scalable/apps/openclaw.svg
+Terminal=false
+Type=Application
+Categories=Development;Utility;Network;X-Raspberry-Pi;X-Chromium-App;
+EOD
+
+# Copy to Chrome Apps area
+cp "$HOME/.local/share/applications/openclaw.desktop" "$HOME/.local/share/applications/chrome-apps/openclaw.desktop"
+cp "$HOME/.local/share/applications/openclaw-web.desktop" "$HOME/.local/share/applications/chrome-apps/openclaw-web.desktop"
+
+# 7. Final Success Message
 echo "✅ OpenClaw installed successfully!"
-echo "🚀 You can launch it from the Application Menu or by typing 'openclaw' in the terminal."
+echo "🚀 You can launch it from the Application Menu (Programming or Accessories) or by typing 'openclaw' in the terminal."
