@@ -5,6 +5,15 @@ alias sudo=""
 # Optimized for Sovereign Performance
 
 echo "🦞 Starting OpenClaw Installation..."
+# --- GLOBAL PURGE START ---
+echo "🧹 Purging old OpenClaw versions..."
+sudo systemctl stop openclaw 2>/dev/null
+sudo systemctl disable openclaw 2>/dev/null
+pkill -f "openclaw" 2>/dev/null
+rm -f $HOME/.local/share/applications/openclaw*.desktop
+rm -f $HOME/.local/share/applications/chrome-apps/openclaw*.desktop
+# --- GLOBAL PURGE END ---
+
 
 # 1. Update and Install System Dependencies
 sudo apt update

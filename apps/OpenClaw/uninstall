@@ -1,6 +1,35 @@
 #!/bin/bash
-echo "🦞 Uninstalling OpenClaw..."
-rm -rf "$HOME/openclaw"
-rm "$HOME/.local/share/applications/openclaw.desktop"
-sed -i '/alias openclaw/d' "$HOME/.bashrc"
-echo "✅ OpenClaw removed."
+
+# 🧹 OpenClaw Global Purge Script - v1.1.6
+# Removes ALL existing OpenClaw installations, icons, and services
+
+echo "🧹 Starting Global OpenClaw Purge..."
+
+# 1. Stop and disable any systemd services
+echo "🛑 Stopping services..."
+sudo systemctl stop openclaw 2>/dev/null
+sudo systemctl disable openclaw 2>/dev/null
+sudo rm -f /etc/systemd/system/openclaw.service
+sudo systemctl daemon-reload
+
+# 2. Kill any lingering processes
+echo "💀 Killing lingering processes..."
+pkill -f "openclaw"
+pkill -f "node scripts/run-node.mjs"
+
+# 3. Remove Desktop Icons (All variants)
+echo "🗑️ Removing menu icons..."
+rm -f $HOME/.local/share/applications/openclaw*.desktop
+rm -f $HOME/.local/share/applications/chrome-apps/openclaw*.desktop
+
+# 4. Remove installation directories
+echo "📂 Deleting installation folders..."
+rm -rf $HOME/openclaw
+rm -rf $HOME/.openclaw
+
+# 5. Clean up bin and cron
+echo "🧹 Cleaning up binaries and schedules..."
+rm -f $HOME/.local/bin/openclaw-updater
+(crontab -l 2>/dev/null | grep -v "openclaw-updater") | crontab -
+
+echo "✅ System Purged. You are ready for a clean install."
