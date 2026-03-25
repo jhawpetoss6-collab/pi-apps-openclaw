@@ -16,6 +16,10 @@ if ! command -v node &> /dev/null || [[ $(node -v | cut -d'.' -f1) != "v20" ]]; 
     curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
     sudo apt install -y nodejs
 sudo npm install -g pnpm
+export PATH="$HOME/.local/bin:$PATH"
+pnpm setup
+source ~/.bashrc
+
 
 fi
 
@@ -49,7 +53,7 @@ chmod +x "$HOME/.local/bin/openclaw-updater"
 # 6. Create Desktop Entries (Programming, Accessories, etc.)
 echo "🎨 Creating Desktop Icons..."
 mkdir -p "$HOME/.local/share/applications/chrome-apps"
-sudo wget -O /usr/share/icons/hicolor/scalable/apps/openclaw.svg https://raw.githubusercontent.com/openclaw/openclaw/main/docs/assets/logo.svg
+sudo wget -q --show-progress -O /usr/share/icons/hicolor/scalable/apps/openclaw.svg https://raw.githubusercontent.com/openclaw/openclaw/main/docs/assets/logo.png
 
 cat > "$HOME/.local/share/applications/openclaw.desktop" <<EOD
 [Desktop Entry]

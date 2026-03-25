@@ -55,6 +55,10 @@ if ! command -v node &> /dev/null || [[ $(node -v | cut -d'.' -f1) != "v20" ]]; 
     curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
     sudo apt install -y nodejs
 sudo npm install -g pnpm
+export PATH="$HOME/.local/bin:$PATH"
+pnpm setup
+source ~/.bashrc
+
 
 fi
 
@@ -84,7 +88,7 @@ chmod +x "$HOME/.local/bin/openclaw-updater"
 
 # Desktop entries
 echo "🎨 Creating Desktop Icons..."
-sudo wget -O /usr/share/icons/hicolor/scalable/apps/openclaw.svg https://raw.githubusercontent.com/openclaw/openclaw/main/docs/assets/logo.svg
+sudo wget -q --show-progress -O /usr/share/icons/hicolor/scalable/apps/openclaw.svg https://raw.githubusercontent.com/openclaw/openclaw/main/docs/assets/logo.png
 
 # Main App
 cat > "$HOME/.local/share/applications/openclaw.desktop" <<EOD
