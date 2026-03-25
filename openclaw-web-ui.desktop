@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=OpenClaw Web UI
+GenericName=AI Assistant Dashboard
+Comment=Native Web Dashboard for OpenClaw
+Exec=chromium-browser --app=http://localhost:5173
+Icon=/usr/share/icons/hicolor/scalable/apps/openclaw.svg
+Terminal=false
+Type=Application
+Categories=Development;Utility;Network;X-Raspberry-Pi;X-Chromium-App;
+Keywords=ai;ui;dashboard;openclaw;
+StartupNotify=true

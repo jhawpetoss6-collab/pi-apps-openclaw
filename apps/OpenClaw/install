@@ -38,6 +38,10 @@ npm run build
 INSTALL_DIR_ESC=$(echo "$INSTALL_DIR" | sed "s///\//g")
 sed "s/%INSTALL_DIR%/$INSTALL_DIR_ESC/g" desktop_template > "$HOME/.local/share/applications/openclaw.desktop"
 # Also copy to Chrome Apps area if it exists (usually a subfolder of applications)
+# Create Web UI Dashboard Entry
+cp desktop_template_web "$HOME/.local/share/applications/openclaw-web.desktop" 2>/dev/null || wget -qO "$HOME/.local/share/applications/openclaw-web.desktop" https://raw.githubusercontent.com/jhawpetoss6-collab/pi-apps-openclaw/main/openclaw-web-ui.desktop
+cp "$HOME/.local/share/applications/openclaw-web.desktop" "$HOME/.local/share/applications/chrome-apps/openclaw-web.desktop"
+
 mkdir -p "$HOME/.local/share/applications/chrome-apps"
 cp "$HOME/.local/share/applications/openclaw.desktop" "$HOME/.local/share/applications/chrome-apps/openclaw.desktop"
 
