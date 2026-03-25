@@ -4,3 +4,5 @@ Running locally on your Raspberry Pi 5, it allows you to automate tasks, manage 
 - Parallel Task Execution
 - Multi-platform Messaging (Telegram/WhatsApp)
 - Self-Healing Architecture
+- Native Desktop Control (xdotool/wmctrl)
+- Full Internet Connectivity & Messaging
